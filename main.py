@@ -3,6 +3,9 @@
 import RPi.GPIO as GPIO
 import time
 
+def setup_linphone():
+	print("Seting up Linphone");
+
 def make_call():
 	print("Button Pressed");
 
