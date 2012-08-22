@@ -1,4 +1,4 @@
-#!/usr/env python
+#!/usr/bin/env python
 
 import RPi.GPIO as GPIO
 import time
