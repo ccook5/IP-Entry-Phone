@@ -20,7 +20,7 @@ def unregister():
 def make_call():
 	print("Button Pressed");
 	subprocess.call(["linphonecsh", "generic", 
-			'"call sip:100@192.168.0.100"'])
+			"call sip:100@192.168.0.106"])
 
 
 input_pin = 4
