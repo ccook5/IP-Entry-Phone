@@ -21,6 +21,8 @@ def make_call():
 	print("Button Pressed");
 	subprocess.call(["linphonecsh", "generic", 
 			"call sip:100@192.168.0.106"])
+	time.sleep(10)
+	subprocess.call(["linphonecsh", "generic", "terminate"])
 
 
 input_pin = 4
