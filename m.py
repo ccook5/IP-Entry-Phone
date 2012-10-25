@@ -13,7 +13,7 @@ def setup_linphone():
 	giveout_info("Seting up Linphone");
 
 	if not check_if_linphone_is_running():
-		subprocess.call(["linphonecsh", "init"])
+		subprocess.call(["/usr/bin/linphonecsh", "init"])
 
 	if check_if_registered():
 		print('already registered');
@@ -21,14 +21,15 @@ def setup_linphone():
 
 		giveout_info('\nRegistering');
 
-		subprocess.call(["linphonecsh", "register", 
+		subprocess.call(["/usr/bin/linphonecsh", "register", 
 				"--host",       "192.168.0.100",
 				"--username",   "101",
 				"--password",   "password"])
 	print('done...\n\n');
 
 def check_if_linphone_is_running():
-	output = subprocess.check_output(["ps", "-A"])
+	giveout_info('checking if linphone is allready running')
+	output = subprocess.check_output(["/bin/ps", "-A"])
 
 	if 'linphonec' in output:
 		return True
@@ -38,39 +39,40 @@ def check_if_linphone_is_running():
 	return False
 
 def check_if_registered():
-	str = subprocess.check_output(["linphonecsh", "status", "register"]);
+	str = ""
+	try:
+		str = subprocess.check_output(["/usr/bin/linphonecsh", "status", "register"]);
+	except subprocess.CalledProcessError:
+		pass
 
 	print str
 
 def unregister():
 	print("Unregistering")
-	subprocess.call(["linphonecsh", "unregister"])
+	subprocess.call(["/usr/bin/linphonecsh", "unregister"])
 
 def make_call():
 
 	try:
 		print("Button Pressed");
-		subprocess.call(["linphonecsh", "generic", 
+		subprocess.call(["/usr/bin/linphonecsh", "generic", 
 				"call sip:100@192.168.0.100"])
-		time.sleep(10)
-		subprocess.call(["linphonecsh", "generic", 
-				"speak default hello"])
-		
+		c = 0
 
-		print('Sleeping');
-		subprocess.call(['linphonecsh', 'status', 'hook']);
-		time.sleep(60)
+		while c < 60:
+			subprocess.call(['/usr/bin/linphonecsh', 'status', 'hook']);
+			time.sleep(2)
+			c += 1
 	except KeyboardInterrupt:
 		print('Hanging up.');
-		subprocess.call(["linphonecsh", "generic", "terminate"])
+		subprocess.call(["/usr/bin/linphonecsh", "generic", "terminate"])
 		raise
 	finally:
 		print('Hanging up.');
-		subprocess.call(["linphonecsh", "generic", "terminate"])
-		raise
+		subprocess.call(["/usr/bin/linphonecsh", "generic", "terminate"])
 
 def read_ip(pin):
-	return subprocess.check_output(['gpio', '-g', 'read', str(pin)])
+	return subprocess.check_output(['/usr/local/bin/gpio', '-g', 'read', str(pin)])
 
 
 if __name__ == '__main__':
@@ -79,6 +81,8 @@ if __name__ == '__main__':
 	GPIO.setmode(GPIO.BCM)
 	GPIO.setup(input_pin, GPIO.IN)
 
+
+	subprocess.call(['whoami'])
 	atexit.register(unregister)
 	setup_linphone()
 
