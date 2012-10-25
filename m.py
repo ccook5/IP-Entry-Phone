@@ -13,18 +13,22 @@ def setup_linphone():
 	giveout_info("Seting up Linphone");
 
 	if not check_if_linphone_is_running():
-		subprocess.call(["/usr/bin/linphonecsh", "init"])
+		str = subprocess.check_output(["/usr/bin/linphonecsh", "init"])
+		print(str)
 
 	if check_if_registered():
 		print('already registered');
 	else:
-
 		giveout_info('\nRegistering');
 
-		subprocess.call(["/usr/bin/linphonecsh", "register", 
+		try:
+			str = subprocess.check_output(["/usr/bin/linphonecsh", "register", 
 				"--host",       "192.168.0.100",
 				"--username",   "101",
 				"--password",   "password"])
+			print(str)
+		except subprocess.CalledProcessError:
+			pass
 	print('done...\n\n');
 
 def check_if_linphone_is_running():
@@ -32,8 +36,10 @@ def check_if_linphone_is_running():
 	output = subprocess.check_output(["/bin/ps", "-A"])
 
 	if 'linphonec' in output:
+		print('linphone found')
 		return True
 	else:
+		print('linphone not found')
 		return False
 
 	return False
