@@ -10,6 +10,7 @@ def giveout_info(str):
 	print(str)
 
 def setup_linphone():
+	str = ""
 	giveout_info("Seting up Linphone");
 
 	if not check_if_linphone_is_running():
@@ -26,9 +27,13 @@ def setup_linphone():
 				"--host",       "192.168.0.100",
 				"--username",   "101",
 				"--password",   "password"])
-			print(str)
 		except subprocess.CalledProcessError:
 			pass
+		except:
+			pass
+
+		print(str)
+		check_if_registered()
 	print('done...\n\n');
 
 def check_if_linphone_is_running():
@@ -45,13 +50,21 @@ def check_if_linphone_is_running():
 	return False
 
 def check_if_registered():
+	print("Checking if allready registered")
 	str = ""
 	try:
 		str = subprocess.check_output(["/usr/bin/linphonecsh", "status", "register"]);
 	except subprocess.CalledProcessError:
 		pass
+	except:
+		pass
 
-	print str
+	print("."+str+".")
+	if str == "registered=1":
+		return True
+	else:
+		return False
+
 
 def unregister():
 	print("Unregistering")
